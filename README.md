@@ -1,4 +1,4 @@
 asskick
 =======
 
-Search torrents from Kickass torrents.
+Search and download torrents from Kickass torrents.
