@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
+
 # -*- coding: utf-8 -*-
 # Author: pantuts
 # URL: http://pantuts.com
@@ -36,11 +37,14 @@ def select_torrent():
     return torrent
 
 
+
 def download_torrent(url):
     fname = os.getcwd() + '/' + url.split('title=')[-1] + '.torrent'
-    # http://stackoverflow.com/a/14114741/1302018
+
     try:
-        r = requests.get(url, stream=True)
+        schema = ('https:')
+        headers = { 'User-Agent': 'Mozilla/5.0 (Windows NT 6.0; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0' } 
+        r = requests.get(schema + url, headers=headers, stream=True)
         with open(fname, 'wb') as f:
             for chunk in r.iter_content(chunk_size=1024):
                 if chunk:
@@ -53,10 +57,10 @@ def download_torrent(url):
     return fname
 
 
+
 def aksearch():
     helper()
-    tmp_url = 'http://kickass.to/usearch/'
-
+    tmp_url = 'https://kickass.to/usearch/'
     query = input('Type query: ')
     url = tmp_url + query + '/'
 
@@ -70,19 +74,18 @@ def aksearch():
         print('Torrents found: 0')
         aksearch()
     else:
-        soup = BeautifulSoup(cont.content, 'html.parser')
+        soup = BeautifulSoup(cont.content)
 
         # to use by age, seeders, and leechers
         # sample:
         # 700.46 MB
         # 5
-        # 2 years
+        # 2 years
         # 1852
         # 130
         al = [s.get_text() for s in soup.find_all('td', {'class':'center'})]
 
         href = [a.get('href') for a in soup.find_all('a', {'title':'Download torrent file'})]
-        magnet = [a.get('href') for a in soup.find_all('a', {'title':'Torrent magnet link'})]
         size = [t.get_text() for t in soup.find_all('td', {'class':'nobr'}) ]
         title = [ti.get_text() for ti in soup.find_all('a', {'class':'cellMainLink'})]
         age = al[2::5]
@@ -112,16 +115,14 @@ def aksearch():
             else:
                 if int(torrent) <= 0 or int(torrent) > len(href):
                     print('Use eyeglasses...')
-                else:
+                else: 
                     print('Download >> ' + href[int(torrent)-1].split('title=')[-1] + '.torrent')
-                    # fname = download_torrent('http:' + href[int(torrent)-1])
-                    fname_magnet = magnet[int(torrent)-1]
-                    subprocess.Popen(['xdg-open', fname_magnet], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    fname = download_torrent(href[int(torrent)-1])
+                    subprocess.Popen(['xdg-open', fname], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     aksearch()
 
-
 if __name__ == '__main__':
-    try:
+    try:                                    
         aksearch()
     except KeyboardInterrupt:
         print('\nHuha!')
