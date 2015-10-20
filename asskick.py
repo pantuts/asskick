@@ -70,7 +70,7 @@ def aksearch():
         print('Torrents found: 0')
         aksearch()
     else:
-        soup = BeautifulSoup(cont.content)
+        soup = BeautifulSoup(cont.content, 'html.parser')
 
         # to use by age, seeders, and leechers
         # sample:
@@ -82,6 +82,7 @@ def aksearch():
         al = [s.get_text() for s in soup.find_all('td', {'class':'center'})]
 
         href = [a.get('href') for a in soup.find_all('a', {'title':'Download torrent file'})]
+        magnet = [a.get('href') for a in soup.find_all('a', {'title':'Torrent magnet link'})]
         size = [t.get_text() for t in soup.find_all('td', {'class':'nobr'}) ]
         title = [ti.get_text() for ti in soup.find_all('a', {'class':'cellMainLink'})]
         age = al[2::5]
@@ -113,8 +114,9 @@ def aksearch():
                     print('Use eyeglasses...')
                 else:
                     print('Download >> ' + href[int(torrent)-1].split('title=')[-1] + '.torrent')
-                    fname = download_torrent(href[int(torrent)-1])
-                    subprocess.Popen(['xdg-open', fname], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    # fname = download_torrent('http:' + href[int(torrent)-1])
+                    fname_magnet = magnet[int(torrent)-1]
+                    subprocess.Popen(['xdg-open', fname_magnet], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     aksearch()
 
 
