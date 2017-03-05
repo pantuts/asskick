@@ -60,7 +60,7 @@ def download_torrent(url):
 
 def aksearch():
     helper()
-    tmp_url = 'https://kickass.to/usearch/'
+    tmp_url = 'https://kickasstorrents.to/usearch/'
     query = input('Type query: ')
     url = tmp_url + query + '/'
 
