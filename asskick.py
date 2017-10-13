@@ -9,6 +9,7 @@
 # requests: https://pypi.python.org/pypi/requests
 # beautifulSoup4: https://pypi.python.org/pypi/beautifulsoup4/4.3.2
 # tabulate: https://pypi.python.org/pypi/tabulate
+# lxml: https://pypi.python.org/pypi/lxml
 
 from bs4 import BeautifulSoup
 import os
@@ -74,7 +75,7 @@ def aksearch():
         print('Torrents found: 0')
         aksearch()
     else:
-        soup = BeautifulSoup(cont.content)
+        soup = BeautifulSoup(cont.content, 'lxml')
 
         # to use by age, seeders, and leechers
         # sample:
